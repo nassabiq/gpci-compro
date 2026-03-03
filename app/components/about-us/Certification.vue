@@ -18,7 +18,8 @@ const items: CertItem[] = [
 		description: "Green Label Indonesia is an environmental certification program developed by the Green Product Council Indonesia (GPCI) to recognize products that meet rigorous sustainability criteria across their life cycle. It is aligned with ISO 14024 (Type I Ecolabel) and acknowledged by the Global Ecolabelling Network (GEN).",
 		image: "/img/gli.png", // ganti sesuai asetmu
 		ctaText: "Certified Product GLI",
-		to: "/certifications/gli", // opsional
+		// to: "/certifications/gli", // opsional
+		to: "/products", // opsional
 	},
 	{
 		greenPrefix: "Green",

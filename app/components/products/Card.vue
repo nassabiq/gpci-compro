@@ -51,12 +51,10 @@ function renderStars(rating: number) {
 			</p>
 
 			<div class="flex space-x-3">
-				<button class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">
-					<NuxtLink :to="`/products/${product.id}`" class="flex items-center justify-center">
-						View Details
-						<ArrowRight class="ml-2 w-4 h-4" />
-					</NuxtLink>
-				</button>
+				<NuxtLink :to="{ path: `/products/${product.slug || product.id}`, query: { uuid: product.id } }" class="flex-1 inline-flex items-center justify-center bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition">
+					View Details
+					<ArrowRight class="ml-2 w-4 h-4" />
+				</NuxtLink>
 
 				<button class="border border-green-600 text-green-700 hover:bg-green-50 px-3 py-2 rounded-lg transition">
 					<Award class="w-4 h-4" />

@@ -53,6 +53,7 @@ export function normalizeProducts(raw: RawRoot): Product[] {
 
 				out.push({
 					id,
+					slug: id,
 					title: brand,
 					image: fallbackImage,
 					company,

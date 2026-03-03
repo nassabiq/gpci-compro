@@ -1,6 +1,7 @@
 // data/products.ts
 export type Product = {
 	id: string;
+	slug: string;
 	title: string;
 	image: string;
 	company: string;

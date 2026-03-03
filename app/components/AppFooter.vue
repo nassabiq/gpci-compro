@@ -66,7 +66,7 @@ function subscribe() {
 					<h4 class="text-lg font-semibold">Quick Links</h4>
 					<nav class="space-y-3">
 						<NuxtLink to="/about" class="block text-gray-300 hover:text-white transition-colors"> About GPCI </NuxtLink>
-						<NuxtLink to="/certification" class="block text-gray-300 hover:text-white transition-colors"> Certification Process </NuxtLink>
+						<!-- <NuxtLink to="/certification" class="block text-gray-300 hover:text-white transition-colors"> Certification Process </NuxtLink> -->
 						<NuxtLink to="/products" class="block text-gray-300 hover:text-white transition-colors"> Certified Products </NuxtLink>
 						<a href="#" class="block text-gray-300 hover:text-white transition-colors"> News &amp; Events </a>
 						<a href="#" class="block text-gray-300 hover:text-white transition-colors"> Resources </a>

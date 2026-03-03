@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {ref, onMounted, computed} from "vue";
-import {useIntersectionObserver} from "@vueuse/core";
+import { ref, onMounted, computed } from "vue";
+import { useIntersectionObserver } from "@vueuse/core";
+import { storeToRefs } from "pinia";
+import { useEventsStore } from "~/stores/events";
 
 /* =========================
    Types
@@ -10,6 +12,29 @@ type Milestone = {
 	title: string;
 	text: string;
 };
+
+const defaultItems: Milestone[] = [
+	{
+		year: "2015",
+		title: "Foundation",
+		text: "GPCI established as Indonesia's premier eco-certification body",
+	},
+	{
+		year: "2017",
+		title: "First Certifications",
+		text: "Launched Green Label Indonesia with initial 25 certified products",
+	},
+	{
+		year: "2019",
+		title: "Industry Recognition",
+		text: "Achieved national recognition and expanded to 100+ certified products",
+	},
+	{
+		year: "2021",
+		title: "Digital Transformation",
+		text: "Launched digital certification platform and online verification system",
+	},
+];
 
 /* =========================
    Props
@@ -25,28 +50,6 @@ const props = withDefaults(
 		reveal?: boolean;
 	}>(),
 	{
-		items: () => [
-			{
-				year: "2015",
-				title: "Foundation",
-				text: "GPCI established as Indonesia's premier eco-certification body",
-			},
-			{
-				year: "2017",
-				title: "First Certifications",
-				text: "Launched Green Label Indonesia with initial 25 certified products",
-			},
-			{
-				year: "2019",
-				title: "Industry Recognition",
-				text: "Achieved national recognition and expanded to 100+ certified products",
-			},
-			{
-				year: "2021",
-				title: "Digital Transformation",
-				text: "Launched digital certification platform and online verification system",
-			},
-		],
 		color: "green",
 		dotSize: "md",
 		alternating: true,
@@ -55,6 +58,15 @@ const props = withDefaults(
 		reveal: true,
 	}
 );
+
+const eventsStore = useEventsStore();
+const { items: apiItems, error: eventsError } = storeToRefs(eventsStore);
+
+const timelineItems = computed<Milestone[]>(() => {
+	if (props.items?.length) return props.items;
+	if (apiItems.value?.length) return apiItems.value;
+	return defaultItems;
+});
 
 /* =========================
    Util classes
@@ -81,6 +93,8 @@ const container = ref<HTMLElement | null>(null);
 const cardEls = ref<HTMLElement[]>([]);
 
 onMounted(() => {
+	eventsStore.fetchList();
+
 	if (!props.reveal || !container.value) return;
 
 	// collect cards
@@ -102,7 +116,7 @@ onMounted(() => {
 				}
 			}
 		},
-		{threshold: 0.15}
+		{ threshold: 0.15 }
 	);
 });
 </script>
@@ -112,6 +126,7 @@ onMounted(() => {
 		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="text-center mb-16">
 				<h2 class="text-4xl font-bold text-gray-900">Our Journey</h2>
+				<!-- <p v-if="eventsError" class="mt-3 text-sm text-amber-700">Events menampilkan data cadangan. API belum bisa diakses.</p> -->
 			</div>
 
 			<div class="relative" ref="container" aria-label="Company timeline">
@@ -121,7 +136,7 @@ onMounted(() => {
 				<div class="md:hidden absolute left-4 top-0 h-full w-1" :class="[colorLine]" />
 
 				<ol class="relative">
-					<li v-for="(m, i) in items" :key="i" class="relative flex items-stretch" :class="[props.dense ? 'mb-10' : 'mb-16']">
+					<li v-for="(m, i) in timelineItems" :key="i" class="relative flex items-stretch" :class="[props.dense ? 'mb-10' : 'mb-16']">
 						<!-- DOT di desktop (tengah) -->
 						<div class="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10 items-center justify-center">
 							<span :class="['rounded-full border-4 border-white', colorBg, dotClass, glow && 'shadow-md']" />

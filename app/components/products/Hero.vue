@@ -27,18 +27,8 @@ defineProps<{
 						Certified Sustainable
 						<span class="block bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent"> Products </span>
 					</h1>
-					<p class="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">Explore our exclusive collection of premium products that have earned the prestigious Green Label Indonesia certification for environmental excellence.</p>
+					<p class="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">Explore all the green products that have achieve Green Label Indonesia certification.</p>
 				</div>
-
-				<!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8">
-					<div v-for="(category, index) in categories" :key="index" class="text-center">
-						<div class="flex justify-center mb-2">
-							<component :is="category.icon" class="w-8 h-8 text-green-400" />
-						</div>
-						<div class="text-2xl font-bold text-white">{{ category.count }}+</div>
-						<div class="text-gray-300 text-sm">{{ category.name }}</div>
-					</div>
-				</div> -->
 			</div>
 		</div>
 	</section>

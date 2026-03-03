@@ -33,6 +33,7 @@ useHead({
 		<AboutUsPrinciples />
 		<!-- <AboutUsVisionMission /> -->
 		<AboutUsMilestone />
+		<AboutUsFaq />
 		<!-- lanjutkan section about lainnya di bawah -->
 	</div>
 </template>

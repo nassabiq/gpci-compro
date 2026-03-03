@@ -20,11 +20,12 @@ const navItems: ReadonlyArray<NavItem> = [
 	{ name: "Home", path: "/" },
 	{ name: "About Us", path: "/about" },
 	{ name: "Certified Products", path: "/products" },
-	// {name: "Certification", path: "/certification"},
-	// {name: "Contact", path: "/contact"},
 ] as const;
 
-const isActive = (path: string): boolean => route.path === path;
+const isActive = (path: string): boolean => {
+	if (path === "/") return route.path === "/";
+	return route.path === path || route.path.startsWith(`${path}/`);
+};
 
 const headerClasses = computed<string[]>(() => ["fixed top-0 left-0 right-0 z-50 transition-all duration-300", isScrolled.value ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-green-100" : "bg-transparent"]);
 const titleClass = computed<string[]>(() => [isScrolled.value ? "text-gray-600" : "text-white"]);

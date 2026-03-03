@@ -12,7 +12,7 @@ const productsStore = useProductsStore();
 const { cards, pending, error, total } = storeToRefs(productsStore);
 
 const page = ref(1);
-const limit = ref(12);
+const limit = ref(10);
 
 onMounted(async () => {
 	await productsStore.fetchList({ page: page.value, limit: limit.value });
