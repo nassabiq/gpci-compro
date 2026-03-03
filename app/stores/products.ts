@@ -130,6 +130,37 @@ export const useProductsStore = defineStore("products", {
 			return "";
 		},
 
+		/**
+		 * Resolve ALL image URLs from an API item (for slider/gallery).
+		 * Returns an array of image strings. Falls back to single image if no list found.
+		 */
+		resolveImagesValue(item: any): string[] {
+			const results: string[] = [];
+
+			// Try array-based media fields first
+			const mediaList = this.pickFirst(item, ["images", "photos", "gallery", "attachments"]);
+			if (Array.isArray(mediaList) && mediaList.length > 0) {
+				for (const entry of mediaList) {
+					if (typeof entry === "string" && entry.trim()) {
+						results.push(entry.trim());
+					} else if (typeof entry === "object" && entry) {
+						const url = this.pickFirst(entry, ["url", "path", "file", "filename", "name", "key", "src"]);
+						if (url !== undefined && url !== null && String(url).trim()) {
+							results.push(String(url).trim());
+						}
+					}
+				}
+			}
+
+			// If no array images found, fall back to the single image
+			if (results.length === 0) {
+				const single = this.resolveImageValue(item);
+				if (single) results.push(single);
+			}
+
+			return results;
+		},
+
 		resolveSlugValue(item: any, title: string, id: string, index: number): string {
 			const rawSlug = this.pickFirst(item, ["slug", "permalink", "url_key", "seo_slug"]);
 			const fromSlugField = this.toSlug(String(rawSlug ?? ""));
@@ -395,11 +426,15 @@ export const useProductsStore = defineStore("products", {
 			const category = this.normalizeTextValue(item?.category?.name) || this.resolveTextField(item, ["category", "category_name", "product_category", "type", "product_type"], ["category_name", "product_category", "name", "title"]) || "Uncategorized";
 			const certificationDate = this.pickFirst(item, ["issue_date", "certification_date", "certified_at", "certificate_date", "published_at", "created_at"]) ?? undefined;
 
+			const image = this.resolveImageValue(item);
+			const images = this.resolveImagesValue(item);
+
 			return {
 				id,
 				slug: this.resolveSlugValue(item, title, id, index),
 				title,
-				image: this.resolveImageValue(item),
+				image,
+				images,
 				company,
 				status,
 				category,

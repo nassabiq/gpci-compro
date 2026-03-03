@@ -56,6 +56,7 @@ export function normalizeProducts(raw: RawRoot): Product[] {
 					slug: id,
 					title: brand,
 					image: fallbackImage,
+					images: [fallbackImage],
 					company,
 					status: isActive, // default sederhana
 					category,

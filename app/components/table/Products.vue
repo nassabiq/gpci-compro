@@ -4,9 +4,23 @@ import { useProductsStore } from "~/stores/products";
 import type { Product } from "~/data/products";
 import { storeToRefs } from "pinia";
 
+const props = withDefaults(
+	defineProps<{
+		certificationUuid?: string;
+	}>(),
+	{
+		certificationUuid: "GLI",
+	}
+);
+
 // ====== STATE ======
 const productsStore = useProductsStore();
-const { cards, total, pending, categoryOptions } = storeToRefs(productsStore);
+const { categoryOptions } = storeToRefs(productsStore);
+
+// Local data state (not shared via store, so multiple instances don't conflict)
+const cards = ref<Product[]>([]);
+const total = ref(0);
+const pending = ref(false);
 
 // Search & Filters
 const search = ref("");
@@ -15,6 +29,24 @@ const route = useRoute();
 
 // Derived lists
 const categorySelectOptions = computed(() => categoryOptions.value.map((c) => ({ id: c.uuid, name: c.name })));
+
+async function fetchData() {
+	pending.value = true;
+	try {
+		await productsStore.fetchList({
+			page: page.value,
+			limit: pageSize.value,
+			search: search.value,
+			category: selectedCategory.value || undefined,
+			certification_uuid: props.certificationUuid,
+		});
+		// Copy from store to local state
+		cards.value = productsStore.cards;
+		total.value = productsStore.total;
+	} finally {
+		pending.value = false;
+	}
+}
 
 onMounted(async () => {
 	await productsStore.fetchCategoryOptions();
@@ -26,13 +58,7 @@ onMounted(async () => {
 		if (found) selectedCategory.value = found.uuid;
 	}
 
-	await productsStore.fetchList({
-		page: page.value,
-		limit: pageSize.value,
-		search: search.value,
-		category: selectedCategory.value || undefined,
-		certification_uuid: "GLI",
-	});
+	await fetchData();
 });
 
 /* ========= Pagination (fixed) ========= */
@@ -46,13 +72,7 @@ watch([search, selectedCategory, pageSize], () => {
 watch(
 	[page, pageSize, search, selectedCategory],
 	() => {
-		productsStore.fetchList({
-			page: page.value,
-			limit: pageSize.value,
-			search: search.value,
-			category: selectedCategory.value || undefined,
-			certification_uuid: "GLI",
-		});
+		fetchData();
 	},
 	{ immediate: false }
 );
@@ -95,86 +115,88 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onEscClose));
 </script>
 
 <template>
-	<section class="py-12 bg-white">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<!-- Controls -->
-			<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
-				<div class="flex-1">
-					<input v-model="search" type="text" placeholder="Search product, company, category…" class="w-full pl-3 pr-3 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+	<div>
+		<section class="py-12 bg-white">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<!-- Controls -->
+				<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
+					<div class="flex-1">
+						<input v-model="search" type="text" placeholder="Search product, company, category…" class="w-full pl-3 pr-3 py-2 border border-gray-300 text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+					</div>
+
+					<div class="flex flex-col sm:flex-row gap-3">
+						<!-- Single-select Category -->
+						<UiSearchableSelect :options="categorySelectOptions" v-model="selectedCategory" placeholder="All Categories" widthClass="sm:w-72" />
+
+						<!-- Page size (single select) -->
+						<UiSelect :options="[10, 20, 50, 100]" v-model="pageSize" :asNumber="true" :formatOption="(n) => `${n} / page`" widthClass="sm:w-36" />
+					</div>
 				</div>
 
-				<div class="flex flex-col sm:flex-row gap-3">
-					<!-- Single-select Category -->
-					<UiSearchableSelect :options="categorySelectOptions" v-model="selectedCategory" placeholder="All Categories" widthClass="sm:w-72" />
+				<!-- Table -->
+				<div class="rounded-xl border border-gray-200 overflow-hidden">
+					<div class="overflow-x-auto">
+						<table class="min-w-full text-left text-sm">
+							<thead class="bg-gray-50 text-gray-700">
+								<tr>
+									<th class="px-4 py-3 font-semibold"></th>
+									<th class="px-4 py-3 font-semibold">Product</th>
+									<th class="px-4 py-3 font-semibold">Status</th>
+									<th class="px-4 py-3 font-semibold">Company</th>
+									<th class="px-4 py-3 font-semibold">Category</th>
+									<th class="px-4 py-3 font-semibold">Certification Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-if="pending">
+									<td colspan="6" class="px-4 py-6 text-center text-gray-500">Loading products...</td>
+								</tr>
 
-					<!-- Page size (single select) -->
-					<UiSelect :options="[10, 20, 50, 100]" v-model="pageSize" :asNumber="true" :formatOption="(n) => `${n} / page`" widthClass="sm:w-36" />
-				</div>
-			</div>
-
-			<!-- Table -->
-			<div class="rounded-xl border border-gray-200 overflow-hidden">
-				<div class="overflow-x-auto">
-					<table class="min-w-full text-left text-sm">
-						<thead class="bg-gray-50 text-gray-700">
-							<tr>
-								<th class="px-4 py-3 font-semibold"></th>
-								<th class="px-4 py-3 font-semibold">Product</th>
-								<th class="px-4 py-3 font-semibold">Status</th>
-								<th class="px-4 py-3 font-semibold">Company</th>
-								<th class="px-4 py-3 font-semibold">Category</th>
-								<th class="px-4 py-3 font-semibold">Certification Date</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-if="pending">
-								<td colspan="6" class="px-4 py-6 text-center text-gray-500">Loading products...</td>
-							</tr>
-
-							<tr v-for="(r, i) in cards" :key="r.id || i" class="border-t border-gray-100 text-gray-500 hover:bg-gray-50 align-middle">
-								<!-- Product with thumbnail -->
-								<td class="px-4 py-3">
-									<button type="button" class="inline-flex max-h-14 max-w-[88px] items-center justify-center rounded-md border border-gray-200 bg-gray-50 p-1 overflow-hidden cursor-zoom-in" @click="openPreview(r.image, r.title || 'Product image')">
-										<img :src="getImageSrc(r.image)" :alt="r.title || 'Product image'" class="block h-auto w-auto max-h-12 max-w-20 object-contain" loading="lazy" decoding="async" @error="useFallback" />
-									</button>
-								</td>
-								<td class="px-4 py-3 w-[150px]">
-									<div class="flex items-start gap-3">
-										<div>
-											<NuxtLink :to="{ path: `/products/${r.slug || r.id}`, query: { uuid: r.id } }" class="font-semibold text-gray-900 whitespace-nowrap hover:text-emerald-700">
-												{{ r.title }}
-											</NuxtLink>
+								<tr v-for="(r, i) in cards" :key="r.id || i" class="border-t border-gray-100 text-gray-500 hover:bg-gray-50 align-middle">
+									<!-- Product with thumbnail -->
+									<td class="px-4 py-3">
+										<button type="button" class="inline-flex max-h-14 max-w-[88px] items-center justify-center rounded-md border border-gray-200 bg-gray-50 p-1 overflow-hidden cursor-zoom-in" @click="openPreview(r.image, r.title || 'Product image')">
+											<img :src="getImageSrc(r.image)" :alt="r.title || 'Product image'" class="block h-auto w-auto max-h-12 max-w-20 object-contain" loading="lazy" decoding="async" @error="useFallback" />
+										</button>
+									</td>
+									<td class="px-4 py-3 w-[150px]">
+										<div class="flex items-start gap-3">
+											<div>
+												<NuxtLink :to="{ path: `/products/${r.slug || r.id}`, query: { uuid: r.id } }" class="font-semibold text-gray-900 whitespace-nowrap hover:text-emerald-700">
+													{{ r.title }}
+												</NuxtLink>
+											</div>
 										</div>
-									</div>
-								</td>
+									</td>
 
-								<td class="px-4 py-3 whitespace-nowrap">
-									<UiBadge :value="r.status" />
-								</td>
-								<td class="px-4 py-3">{{ r.company }}</td>
-								<td class="px-4 py-3 whitespace-nowrap">{{ r.category }}</td>
-								<td class="px-4 py-3">
-									{{ formatDate(r.certificationDate) }}
-								</td>
-							</tr>
+									<td class="px-4 py-3 whitespace-nowrap">
+										<UiBadge :value="r.status" />
+									</td>
+									<td class="px-4 py-3">{{ r.company }}</td>
+									<td class="px-4 py-3 whitespace-nowrap">{{ r.category }}</td>
+									<td class="px-4 py-3">
+										{{ formatDate(r.certificationDate) }}
+									</td>
+								</tr>
 
-							<tr v-if="!pending && cards.length === 0">
-								<td colspan="6" class="px-4 py-6 text-center text-gray-500">No data found.</td>
-							</tr>
-						</tbody>
-					</table>
+								<tr v-if="!pending && cards.length === 0">
+									<td colspan="6" class="px-4 py-6 text-center text-gray-500">No data found.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
+
+				<!-- Footer / pagination -->
+				<UiPagination class="mt-3" v-model:page="page" :total-items="total || 0" :page-size="pageSize" :max-buttons="7" :show-edges="true" />
 			</div>
+		</section>
 
-			<!-- Footer / pagination -->
-			<UiPagination class="mt-3" v-model:page="page" :total-items="total || 0" :page-size="pageSize" :max-buttons="7" :show-edges="true" />
-		</div>
-	</section>
-
-	<div v-if="previewOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" @click="closePreview">
-		<div class="relative max-h-[90vh] max-w-[90vw] rounded-xl bg-white p-2" @click.stop>
-			<button type="button" class="absolute -right-3 -top-3 h-8 w-8 rounded-full bg-white text-gray-700 shadow cursor-pointer" @click="closePreview" aria-label="Close preview">✕</button>
-			<img :src="previewSrc" :alt="previewAlt" class="max-h-[85vh] max-w-[88vw] object-contain" @error="useFallback" />
+		<div v-if="previewOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" @click="closePreview">
+			<div class="relative max-h-[90vh] max-w-[90vw] rounded-xl bg-white p-2" @click.stop>
+				<button type="button" class="absolute -right-3 -top-3 h-8 w-8 rounded-full bg-white text-gray-700 shadow cursor-pointer" @click="closePreview" aria-label="Close preview">✕</button>
+				<img :src="previewSrc" :alt="previewAlt" class="max-h-[85vh] max-w-[88vw] object-contain" @error="useFallback" />
+			</div>
 		</div>
 	</div>
 </template>

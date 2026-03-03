@@ -40,6 +40,13 @@ async function loadDetail() {
 
 watch(() => uuid.value, () => loadDetail(), { immediate: true });
 
+const productImages = computed<string[]>(() => {
+	if (!product.value) return [];
+	if (product.value.images?.length) return product.value.images;
+	if (product.value.image) return [product.value.image];
+	return [];
+});
+
 const breadcrumbs = computed(() => {
 	const items: { label: string; to?: string }[] = [
 		{ label: "Home", to: "/" },
@@ -70,10 +77,9 @@ useHead(() => ({
 					{{ loadError }}
 				</div>
 				<div v-else-if="product" class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+					<!-- Image Slider -->
 					<div class="lg:col-span-3 rounded-2xl border border-slate-200 bg-white p-4 lg:p-6 shadow-sm">
-						<div class="rounded-xl bg-slate-100 min-h-[360px] lg:min-h-[440px] flex items-center justify-center overflow-hidden">
-							<img :src="getImageSrc(product.image)" :alt="product.title || 'Product image'" class="max-h-[420px] w-auto max-w-full object-contain" @error="useFallback" />
-						</div>
+						<UiImageSlider :images="productImages" :alt="product.title || 'Product image'" />
 					</div>
 
 					<div class="lg:col-span-2 space-y-4">
