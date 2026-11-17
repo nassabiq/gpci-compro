@@ -1,17 +1,17 @@
 <!-- src/pages/index.vue -->
 <script setup lang="ts">
-import { useHead } from "#imports";
-import { ArrowRight } from "@lucide/vue";
+import {useHead} from "#imports";
+import {ArrowRight} from "@lucide/vue";
 
 useHead({
-	title: "Green Product Council Indonesia — Premium Eco-Certification",
+	title: "Premium Eco - Certification diganti jadi ",
 	meta: [
-		{ name: "description", content: "GPCI menyediakan sertifikasi produk ramah lingkungan berkelas premium. Tingkatkan citra merek dan dampak keberlanjutan Anda." },
-		{ property: "og:title", content: "GPCI — Premium Eco-Certification" },
-		{ property: "og:description", content: "Sertifikasi produk ramah lingkungan untuk brand yang berorientasi keberlanjutan." },
-		{ property: "og:type", content: "website" },
-		{ property: "og:image", content: "/images/og-cover.jpg" },
-		{ name: "twitter:card", content: "summary_large_image" },
+		{name: "description", content: "GPCI menyediakan sertifikasi produk ramah lingkungan berkelas premium. Tingkatkan citra merek dan dampak keberlanjutan Anda."},
+		{property: "og:title", content: "GPCI — Premium Eco-Certification"},
+		{property: "og:description", content: "Sertifikasi produk ramah lingkungan untuk brand yang berorientasi keberlanjutan."},
+		{property: "og:type", content: "website"},
+		{property: "og:image", content: "/images/og-cover.jpg"},
+		{name: "twitter:card", content: "summary_large_image"},
 	],
 	script: [
 		{
@@ -40,7 +40,13 @@ useHead({
 /* =========================
 	Types
 ========================= */
-type Testimonial = { quote: string; name: string; role: string; company: string; avatar: string };
+type Testimonial = {
+	quote: string;
+	name: string;
+	role: string;
+	company: string;
+	avatar: string;
+};
 
 /* =========================
 	Data
@@ -68,6 +74,9 @@ const testimonials: ReadonlyArray<Testimonial> = [
 	<div class="min-h-screen">
 		<!-- ===== Hero ===== -->
 		<HomeHero />
+
+		<!-- ===== Sponsors ===== -->
+		<HomeSponsorBanner />
 
 		<!-- ===== Features ===== -->
 		<HomeFeatures />

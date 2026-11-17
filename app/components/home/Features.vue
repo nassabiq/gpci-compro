@@ -39,7 +39,7 @@ const features: ReadonlyArray<Feature> = [
 </script>
 <template>
 	<div>
-		<section id="features" class="py-24 bg-white">
+		<section id="features" class="pb-24 pt-16 bg-white">
 			<div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-16">
 					<h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why Choose GPCI Certification?</h2>
