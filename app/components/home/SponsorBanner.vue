@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import {ChevronLeft, ChevronRight} from "@lucide/vue";
+import sponsor1 from "~/assets/img/sponsors/sponsors-1.webp";
+import sponsor2 from "~/assets/img/sponsors/sponsors-2.webp";
+import sponsor3 from "~/assets/img/sponsors/sponsors-3.webp";
+import sponsor4 from "~/assets/img/sponsors/sponsors-4.webp";
 
 // Ganti gambar dan URL contoh ini dengan banner sponsor berukuran 10:3.
 const banners = [
-	{image: "/img/sponsors/sponsors-1.webp", url: "https://iapmoindonesia.org/"},
-	{image: "/img/sponsors/sponsors-2.webp", url: "https://www.toto.co.id/"},
-	{image: "/img/sponsors/sponsors-3.webp", url: "https://bataramahlingkungan.co.id/"},
-	{image: "/img/sponsors/sponsors-4.webp", url: "https://toilon.co.id/id/"},
+	{image: sponsor1, url: "https://iapmoindonesia.org/"},
+	{image: sponsor2, url: "https://www.toto.co.id/"},
+	{image: sponsor3, url: "https://bataramahlingkungan.co.id/"},
+	{image: sponsor4, url: "https://toilon.co.id/id/"},
 ];
 
 const active = ref(0);
