@@ -4,7 +4,9 @@ import {ChevronLeft, ChevronRight} from "@lucide/vue";
 // Ganti gambar dan URL contoh ini dengan banner sponsor berukuran 10:3.
 const banners = [
 	{image: "/img/sponsors/sponsors-1.webp", url: "https://iapmoindonesia.org/"},
-	{image: "/img/sponsors/sponsors-3.webp", url: "https://www.toto.co.id/"},
+	{image: "/img/sponsors/sponsors-2.webp", url: "https://www.toto.co.id/"},
+	{image: "/img/sponsors/sponsors-3.webp", url: "https://bataramahlingkungan.co.id/"},
+	{image: "/img/sponsors/sponsors-4.webp", url: "https://toilon.co.id/id/"},
 ];
 
 const active = ref(0);
