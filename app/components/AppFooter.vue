@@ -68,7 +68,7 @@ function subscribe() {
 						<NuxtLink to="/about" class="block text-gray-300 hover:text-white transition-colors"> About GPCI </NuxtLink>
 						<!-- <NuxtLink to="/certification" class="block text-gray-300 hover:text-white transition-colors"> Certification Process </NuxtLink> -->
 						<NuxtLink to="/products" class="block text-gray-300 hover:text-white transition-colors"> Certified Products </NuxtLink>
-						<a href="#" class="block text-gray-300 hover:text-white transition-colors"> News &amp; Events </a>
+						<NuxtLink to="/editorial" class="block text-gray-300 hover:text-white transition-colors"> Editorial &amp; News </NuxtLink>
 						<a href="#" class="block text-gray-300 hover:text-white transition-colors"> Resources </a>
 					</nav>
 				</div>
@@ -106,13 +106,10 @@ function subscribe() {
 					</div>
 
 					<!-- Newsletter -->
-					<!-- <div class="pt-4 border-t border-gray-700">
-						<h5 class="font-medium mb-3">Stay Updated</h5>
-						<div class="flex space-x-2">
-							<input v-model="email" type="email" placeholder="Your email" class="flex-1 px-3 py-2 bg-white/10 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400" />
-							<button type="button" @click.prevent="subscribe" class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 rounded-lg hover:from-green-600 hover:to-green-800 transition-all">Subscribe</button>
-						</div>
-					</div> -->
+					<div class="pt-4 border-t border-gray-700">
+						<h5 class="font-medium mb-3 text-sm text-gray-200">Stay Updated</h5>
+						<NewsletterNewsletterForm dark layout="stacked" placeholder="Your email" button-text="Subscribe" />
+					</div>
 				</div>
 			</div>
 		</div>

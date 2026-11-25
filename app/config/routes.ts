@@ -9,6 +9,8 @@ export const landingRoutes: string[] = [
 	"/about",
 	"/products",
 	"/products/*",
+	"/editorial",
+	"/editorial/*",
 ];
 
 /**
@@ -19,6 +21,7 @@ export const transparentHeaderRoutes: string[] = [
 	"/",
 	"/about",
 	"/products",
+	"/editorial",
 ];
 
 /** Cek apakah path cocok dengan salah satu route dalam list */
