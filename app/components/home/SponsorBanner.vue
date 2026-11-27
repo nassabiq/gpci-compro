@@ -10,7 +10,7 @@ const banners = [
 	{image: sponsor1, url: "https://iapmoindonesia.org/"},
 	{image: sponsor2, url: "https://www.toto.co.id/"},
 	{image: sponsor3, url: "https://bataramahlingkungan.co.id/"},
-	{image: sponsor4, url: "https://thermo.co.id/id/"},
+	{image: sponsor4, url: "https://thermo.co.id/"},
 ];
 
 const active = ref(0);
