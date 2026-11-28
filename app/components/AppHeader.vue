@@ -20,6 +20,7 @@ const navItems: ReadonlyArray<NavItem> = [
 	{ name: "Home", path: "/" },
 	{ name: "About Us", path: "/about" },
 	{ name: "Certified Products", path: "/products" },
+	{ name: "Editorial", path: "/editorial" },
 ] as const;
 
 const isActive = (path: string): boolean => {
